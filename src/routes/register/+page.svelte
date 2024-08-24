@@ -22,12 +22,12 @@
   }
 </script>
 
-<h1>Register</h1>
-
 {#if error}
   <p class="error">{error}</p>
 {/if}
-<div class="flex flex-col min-h-screen justify-center gap-9">
+
+<div class="flex flex-col max-h-screen items-center gap-10 mt-4">
+  <h1 class="text-3xl">Register</h1>
   <form
     method="POST"
     use:enhance={() => {
@@ -43,17 +43,32 @@
   >
     <div>
       <label for="name">Name:</label>
-      <input type="text" id="name" name="name" bind:value={name} required />
+      <input
+        type="text"
+        id="name"
+        name="name"
+        class="input input-bordered w-full max-w-xs"
+        bind:value={name}
+        required
+      />
     </div>
     <div>
       <label for="email">Email:</label>
-      <input type="email" id="email" name="email" bind:value={email} required />
+      <input
+        type="email"
+        id="email"
+        name="email"
+        class="input input-bordered w-full max-w-xs"
+        bind:value={email}
+        required
+      />
     </div>
     <div>
       <label for="password">Password:</label>
       <input
         type="password"
         id="password"
+        class="input input-bordered w-full max-w-xs"
         name="password"
         bind:value={password}
         required
@@ -64,15 +79,16 @@
       <input
         type="password"
         id="passwordConfirm"
+        class="input input-bordered w-full max-w-xs"
         bind:value={passwordConfirm}
         required
       />
     </div>
-    <button type="submit">Register</button>
+    <button class="btn mt-3" type="submit">Register</button>
     {#if form?.message}
       <p class="error">{form.message}</p>
     {/if}
   </form>
 
-  <p>Already have an account? <a href="/login">Login</a></p>
+  <a href="/login" class="btn btn-wide"> Already have an account? Login </a>
 </div>
