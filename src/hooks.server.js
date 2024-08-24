@@ -23,7 +23,7 @@ export const handle = async ({ event, resolve }) => {
 
 	response.headers.append(
 		'set-cookie',
-		event.locals.pb.authStore.exportToCookie({ secure: false, expires, sameSite: 'none' })
+		event.locals.pb.authStore.exportToCookie({ secure: false, expires, sameSite: 'lax' })
 	);
 
 	return response;

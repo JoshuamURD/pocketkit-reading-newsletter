@@ -4,6 +4,7 @@ import { EMAIL, PASSWORD } from "$env/static/private";
 //A function to get the URL of the cover image of the book to store in the pocketbase
 async function fetchBookCoverUrl(author, bookName) {
   const query = `${bookName} ${author}`.replace(/ /g, '+');
+  console.log(query)
   const url = `https://www.googleapis.com/books/v1/volumes?q=${query}`;
   try {
     const response = await fetch(url);
@@ -55,7 +56,6 @@ export const actions = {
       return { success: true, record };
     } catch (error) {
       console.error("Error creating record:", error);
-      console.error("Detailed error data:", JSON.stringify(error.response?.data, null, 2));
       return { 
         success: false, 
         error: error.message,

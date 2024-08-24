@@ -22,73 +22,87 @@
   }
 </script>
 
-{#if error}
-  <p class="error">{error}</p>
-{/if}
-
-<div class="flex flex-col max-h-screen items-center gap-10 mt-4">
-  <h1 class="text-3xl">Register</h1>
-  <form
-    method="POST"
-    use:enhance={() => {
-      return async ({ result }) => {
-        if (result.type === "success") {
-          goto("/login");
-        } else if (result.type === "error") {
-          error = result.error.message;
-        }
-      };
-    }}
-    on:submit|preventDefault={validateForm}
-  >
-    <div>
-      <label for="name">Name:</label>
-      <input
-        type="text"
-        id="name"
-        name="name"
-        class="input input-bordered w-full max-w-xs"
-        bind:value={name}
-        required
-      />
-    </div>
-    <div>
-      <label for="email">Email:</label>
-      <input
-        type="email"
-        id="email"
-        name="email"
-        class="input input-bordered w-full max-w-xs"
-        bind:value={email}
-        required
-      />
-    </div>
-    <div>
-      <label for="password">Password:</label>
-      <input
-        type="password"
-        id="password"
-        class="input input-bordered w-full max-w-xs"
-        name="password"
-        bind:value={password}
-        required
-      />
-    </div>
-    <div>
-      <label for="passwordConfirm">Confirm Password:</label>
-      <input
-        type="password"
-        id="passwordConfirm"
-        class="input input-bordered w-full max-w-xs"
-        bind:value={passwordConfirm}
-        required
-      />
-    </div>
-    <button class="btn mt-3" type="submit">Register</button>
-    {#if form?.message}
-      <p class="error">{form.message}</p>
+<div class="h-screen flex justify-center items-center">
+  <div class="card w-full max-w-md bg-base-100 shadow-md p-4 m-2">
+    {#if error}
+      <p class="text-error">{error}</p>
     {/if}
-  </form>
 
-  <a href="/login" class="btn btn-wide"> Already have an account? Login </a>
+    <h1 class="text-3xl mb-4">Register</h1>
+
+    <form
+      method="POST"
+      use:enhance={() => {
+        return async ({ result }) => {
+          if (result.type === "success") {
+            goto("/login");
+          } else if (result.type === "error") {
+            error = result.error.message;
+          }
+        };
+      }}
+      on:submit|preventDefault={validateForm}
+    >
+      <div class="form-control">
+        <label for="name" class="label">Name:</label>
+
+        <input
+          type="text"
+          id="name"
+          name="name"
+          class="input input-bordered w-full"
+          bind:value={name}
+          required
+        />
+      </div>
+
+      <div class="form-control">
+        <label for="email" class="label">Email:</label>
+
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="input input-bordered w-full"
+          bind:value={email}
+          required
+        />
+      </div>
+
+      <div class="form-control">
+        <label for="password" class="label">Password:</label>
+
+        <input
+          type="password"
+          id="password"
+          class="input input-bordered w-full"
+          name="password"
+          bind:value={password}
+          required
+        />
+      </div>
+
+      <div class="form-control">
+        <label for="passwordConfirm" class="label">Confirm Password:</label>
+
+        <input
+          type="password"
+          id="passwordConfirm"
+          class="input input-bordered w-full"
+          bind:value={passwordConfirm}
+          required
+        />
+      </div>
+
+      <button class="btn btn-primary mt-4" type="submit">Register</button>
+
+      {#if form?.message}
+        <p class="text-error">{form.message}</p>
+      {/if}
+    </form>
+
+    <a href="/login" class="btn btn-link btn-block"
+      >Already have an account? Login</a
+    >
+  </div>
 </div>
