@@ -22,8 +22,8 @@
   }
 </script>
 
-<div class="h-screen flex justify-center items-center">
-  <div class="card w-full max-w-md bg-base-100 shadow-md p-4 m-2">
+<div class="flex justify-center m-0">
+  <div class="card w-full max-w-md bg-base-100 shadow-md p-4 ml-2 mr-2">
     {#if error}
       <p class="text-error">{error}</p>
     {/if}

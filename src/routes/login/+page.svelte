@@ -22,24 +22,44 @@
   }
 </script>
 
-<form method="POST" use:enhance={handleSubmit}>
-  <input
-    type="email"
-    name="email"
-    bind:value={email}
-    placeholder="Email"
-    required
-  />
-  <input
-    type="password"
-    name="password"
-    bind:value={password}
-    placeholder="Password"
-    required
-  />
-  <button type="submit">Login</button>
-</form>
+<div class="h-screen flex justify-center items-center">
+  <div class="card w-full max-w-md bg-base-100 shadow-md p-4">
+    {#if errorMsg}
+      <p class="text-error">{errorMsg}</p>
+    {/if}
 
-{#if errorMsg}
-  <p style="color: red;">{errorMsg}</p>
-{/if}
+    <h1 class="text-3xl mb-4">Login</h1>
+
+    <form method="POST" use:enhance={handleSubmit}>
+      <div class="form-control">
+        <label for="email" class="label">Email:</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="input input-bordered w-full"
+          bind:value={email}
+          placeholder="Email"
+          required
+        />
+      </div>
+      <div class="form-control">
+        <label for="password" class="label">Password:</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="input input-bordered w-full"
+          bind:value={password}
+          placeholder="Password"
+          required
+        />
+      </div>
+      <button class="btn btn-primary mt-4" type="submit">Login</button>
+    </form>
+
+    <a href="/register" class="btn btn-link btn-block"
+      >Don't have an account? Register</a
+    >
+  </div>
+</div>

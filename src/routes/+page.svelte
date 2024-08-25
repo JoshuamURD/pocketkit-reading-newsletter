@@ -3,7 +3,6 @@
   import { getContext } from "svelte";
   export let data;
   const user = getContext("user");
-  console.log("data: " + data.books);
   const { books } = data;
 </script>
 
@@ -15,7 +14,9 @@
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
     >
       {#each books as book}
-        <div class="card bg-base-100 shadow-xl">
+        <div
+          class="card bg-base-100 shadow-xl transition-all ease-in hover:scale-105"
+        >
           {#if book.cover_url}
             <figure>
               <img
@@ -29,7 +30,9 @@
             <h2 class="card-title">{book.book_name}</h2>
             <p class="text-sm text-base-content/70">{book.author}</p>
             <div class="card-actions justify-end mt-4">
-              <button class="btn btn-primary btn-sm">Read More</button>
+              <a href="/book/{book.id}" class="btn btn-primary btn-sm"
+                >Read More</a
+              >
             </div>
           </div>
         </div>
