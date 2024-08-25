@@ -20,7 +20,14 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"node-fetch": "^3.3.2",
+		"googleapis": "^142.0.0",
+		"node-fetch": "^2.7.0",
+		"nodemailer": "^6.9.14",
+		"pdf-lib": "^1.17.1",
+		"pdf-parse": "^1.1.1",
+		"pdf.js-extract": "^0.2.1",
+		"pdfjs": "^2.5.3",
+		"pdfjs-dist": "^4.5.136",
 		"pocketbase": "^0.21.4"
 	}
 }

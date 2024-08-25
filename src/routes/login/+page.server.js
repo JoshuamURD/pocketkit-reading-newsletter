@@ -13,6 +13,9 @@ export const actions = {
         return { success: true };
       } catch (err) {
         console.error("Login failed", err);
+        if (err.message=="Please verify your account first.") {
+          await locals.pb.collection('users').requestVerification(email);
+        }
         return { 
           success: false, 
           error: "Your login failed! " + err.message

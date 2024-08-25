@@ -33,20 +33,37 @@
   </div>
 
   {#if currentUserBook}
-    <form
-      method="POST"
-      action="?/unassign"
-      use:enhance={() => {
-        return async ({ result }) => {
-          if (result.type === "success") {
-            await handleSuccess();
-          }
-        };
-      }}
-    >
-      <input type="hidden" name="userBookId" value={currentUserBook.id} />
-      <button class="btn btn-warning">Unassign Book</button>
-    </form>
+    <div class="flex space-x-4 mb-4">
+      <form
+        method="POST"
+        action="?/unassign"
+        use:enhance={() => {
+          return async ({ result }) => {
+            if (result.type === "success") {
+              await handleSuccess();
+            }
+          };
+        }}
+      >
+        <input type="hidden" name="userBookId" value={currentUserBook.id} />
+        <button class="btn btn-warning">Unassign Book</button>
+      </form>
+
+      <form
+        method="POST"
+        action="?/sendEmail"
+        use:enhance={() => {
+          return async ({ result }) => {
+            if (result.type === "success") {
+              await handleSuccess();
+            }
+          };
+        }}
+      >
+        <input type="hidden" name="userBookId" value={currentUserBook.id} />
+        <button class="btn btn-primary">Send Email</button>
+      </form>
+    </div>
   {:else}
     <form
       method="POST"
@@ -98,7 +115,7 @@
     <tbody>
       {#each userBooks as userBook}
         <tr>
-          <td>{userBook.expand.users.email}</td>
+          <td>{userBook.expand.users.name}</td>
           <td>{userBook.start_page}</td>
           <td>{userBook.end_page}</td>
         </tr>

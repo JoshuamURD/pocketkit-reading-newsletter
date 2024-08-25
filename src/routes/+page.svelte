@@ -18,7 +18,7 @@
           class="card bg-base-100 shadow-xl transition-all ease-in hover:scale-105"
         >
           {#if book.cover_url}
-            <figure>
+            <figure class="mt-2">
               <img
                 src={book.cover_url}
                 alt={book.book_name}
