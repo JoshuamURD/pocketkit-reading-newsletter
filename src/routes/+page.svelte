@@ -15,14 +15,14 @@
     >
       {#each books as book}
         <div
-          class="card bg-base-100 shadow-xl transition-all ease-in hover:scale-105"
+          class="card bg-base-100 p-4 m-3 shadow-xl transition-all ease-in hover:scale-105"
         >
           {#if book.cover_url}
-            <figure class="mt-2">
+            <figure>
               <img
                 src={book.cover_url}
                 alt={book.book_name}
-                class="w-full h-48 object-contain"
+                class="w-full h-48 object-contain mt-3"
               />
             </figure>
           {/if}

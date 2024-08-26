@@ -1,4 +1,4 @@
-import { error } from '@sveltejs/kit';
+import { error, redirect} from '@sveltejs/kit';
 import nodemailer from 'nodemailer';
 import { GMAIL_USER, GMAIL_PASS, GEMINI_API_KEY } from '$env/static/private';
 import { PDFExtract } from 'pdf.js-extract';
@@ -146,6 +146,66 @@ export const actions = {
             console.error('Error sending email:', err);
             throw error(500, { message: 'Error sending email', details: err.message });
         }
+    },
+    deleteBook: async ({ params, locals }) => {
+        const { id } = params;
+        const { pb } = locals;
+
+        try {
+            // First, fetch all user_books entries for this book
+            const userBooksToDelete = await pb.collection('user_books').getFullList({ filter: `books="${id}"` });
+            
+            // Delete all user_books entries
+            for (const userBook of userBooksToDelete) {
+                try {
+                    await pb.collection('user_books').delete(userBook.id);
+                } catch (deleteErr) {
+                    console.error(`Error deleting user_book entry ${userBook.id}:`, deleteErr);
+                    // Continue with the next user_book even if this one fails
+                }
+            }
+
+            // Now try to delete the book itself
+            try {
+                await pb.collection('books').delete(id);
+            } catch (bookDeleteErr) {
+                if (bookDeleteErr.status === 400) {
+                    // If it's a 400 error, it might be due to remaining relations
+                    // Fetch the book to check if it still exists
+                    try {
+                        await pb.collection('books').getOne(id);
+                        // If the book still exists, throw an error
+                        throw error(400, { 
+                            message: 'Unable to delete book due to existing relations', 
+                            details: 'Please ensure all related entries are removed before deleting the book.'
+                        });
+                    } catch (getErr) {
+                        if (getErr.status === 404) {
+                            // If the book doesn't exist, it was successfully deleted
+                            console.log('Book was successfully deleted');
+                        } else {
+                            // If it's any other error, rethrow it
+                            throw getErr;
+                        }
+                    }
+                } else {
+                    // If it's not a 400 error, rethrow it
+                    throw bookDeleteErr;
+                }
+            }
+
+            return { success: true, message: 'Book successfully deleted' };
+        } catch (err) {
+            console.error('Error deleting book:', err);
+            
+            if (err.status === 404) {
+                return { success: true, message: 'Book already deleted' };
+            } else if (err.status === 400) {
+                return { success: false, error: err.message };
+            } else {
+                return { success: false, error: 'An unexpected error occurred while deleting the book' };
+            }
+        }
     }
 };
 
@@ -162,20 +222,15 @@ async function generateQuestions(content) {
         body: JSON.stringify({
             contents: [{
                 parts: [{
-                    text: `Please analyze the pages of the provided PDF document and generate a series of thought-provoking questions that would encourage deep discussion and critical thinking about the text. Focus on the following aspects:
+                    text: `Analyze the provided text from a book and generate 5-7 thought-provoking questions. These questions should:
 
-1. Key Themes and Ideas: What are the main themes or arguments presented in the document? How are these ideas supported or challenged within the text?
-   
-2. Author’s Perspective: What is the author's viewpoint or stance on the subject matter? How does the author’s perspective influence the presentation of information?
+Encourage discussion and conversation among readers
+Help readers better understand the text and its themes
+Range from straightforward comprehension to more complex interpretive questions
+Avoid simple yes/no answers, instead promoting critical thinking and analysis
+Be specific to the given text
 
-3. Evidence and Examples: What evidence or examples are used to substantiate the key points? Are there any notable gaps or areas that could benefit from further elaboration?
-
-4. Implications and Impact: What are the potential implications or consequences of the ideas presented? How might they affect current thinking or practices in the relevant field?
-
-5. Connections and Comparisons: How do the concepts in the text relate to other known theories, works, or real-world situations? Are there any interesting contrasts or parallels?
-
-Generate questions that will help in reconstructing the ideas, exploring their significance, and fostering a comprehensive understanding of the material.
-:\n\n${content.substring(0, 1000)}`
+For each question, provide a brief explanation of why it's important or how it relates to the text. Ensure the questions are diverse and cover various aspects of the book to promote a well-rounded discussion.${content.substring(0, 1000)}`
                 }]
             }]
         })
