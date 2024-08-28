@@ -66,6 +66,7 @@
               <button on:click={handleLogout}>Logout</button>
             </li>
             <li><a href="/add-book" on:click={closeDropdown}>Add book</a></li>
+            <li><a href="/groups" on:click={closeDropdown}>Groups</a></li>
           {:else}
             <li><a href="/register" on:click={closeDropdown}>Register</a></li>
             <li><a href="/login" on:click={closeDropdown}>Login</a></li>
