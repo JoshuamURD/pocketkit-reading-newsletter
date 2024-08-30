@@ -22,7 +22,7 @@
   }
 </script>
 
-<div class="flex justify-center m-0">
+<div class="flex justify-center my-10">
   <div class="card w-full max-w-md bg-base-100 shadow-md p-4 ml-2 mr-2">
     {#if error}
       <p class="text-error">{error}</p>
