@@ -1,42 +1,90 @@
 <!-- src/routes/books/+page.svelte -->
 <script>
   import { getContext } from "svelte";
+  import { fly, fade } from "svelte/transition";
+
   export let data;
   const user = getContext("user");
   const { books } = data;
+
+  function truncate(text, length) {
+    return text.length > length ? text.slice(0, length) + "..." : text;
+  }
+
+  function getInitials(name) {
+    return name
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  }
 </script>
 
-{#if user}
-  <div class="container mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-6">Books</h1>
+<div class="min-h-screen bg-base-200 py-8">
+  {#if user}
+    <div class="container mx-auto px-4" in:fade={{ duration: 300 }}>
+      <h1 class="text-4xl font-bold mb-8 text-center text-primary">
+        The Library
+      </h1>
 
-    <div
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-    >
-      {#each books as book}
+      {#if books.length > 0}
         <div
-          class="card bg-base-100 p-4 m-3 shadow-xl transition-all ease-in hover:scale-105"
+          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
         >
-          {#if book.cover_url}
-            <figure>
-              <img
-                src={book.cover_url}
-                alt={book.book_name}
-                class="w-full h-48 object-contain mt-3"
-              />
-            </figure>
-          {/if}
-          <div class="card-body">
-            <h2 class="card-title">{book.book_name}</h2>
-            <p class="text-sm text-base-content/70">{book.author}</p>
-            <div class="card-actions justify-end mt-4">
-              <a href="/book/{book.id}" class="btn btn-primary btn-sm"
-                >Read More</a
-              >
+          {#each books as book, index}
+            <div
+              class="card bg-base-100 shadow-lg hover:shadow-xl transition-all duration-300"
+              in:fly={{ y: 20, duration: 300, delay: index * 50 }}
+            >
+              <div class="relative pb-[140%]">
+                {#if book.cover_url}
+                  <img
+                    src={book.cover_url}
+                    alt={book.book_name}
+                    class="absolute top-0 left-0 w-full h-full object-cover rounded-t-xl"
+                  />
+                {:else}
+                  <div
+                    class="absolute top-0 left-0 w-full h-full bg-primary/10 flex items-center justify-center rounded-t-xl"
+                  >
+                    <span class="text-4xl font-bold text-primary/50"
+                      >{getInitials(book.book_name)}</span
+                    >
+                  </div>
+                {/if}
+              </div>
+              <div class="p-3">
+                <h2
+                  class="font-semibold text-sm leading-tight mb-1"
+                  title={book.book_name}
+                >
+                  {truncate(book.book_name, 30)}
+                </h2>
+                <p
+                  class="text-xs text-base-content/70 mb-2"
+                  title={book.author}
+                >
+                  {truncate(book.author, 25)}
+                </p>
+                <a href="/book/{book.id}" class="btn btn-primary btn-xs w-full"
+                  >Details</a
+                >
+              </div>
             </div>
-          </div>
+          {/each}
         </div>
-      {/each}
+      {:else}
+        <div
+          class="text-center mt-16 bg-base-100 p-8 rounded-xl shadow-lg"
+          in:fade
+        >
+          <p class="text-xl text-base-content/70 mb-4">
+            Your library is waiting for its first book.
+          </p>
+          <a href="/add-book" class="btn btn-primary">Add a Book</a>
+        </div>
+      {/if}
     </div>
-  </div>
-{/if}
+  {/if}
+</div>
