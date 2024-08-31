@@ -1,3 +1,4 @@
+// routes/groups/server/js
 import { error, redirect } from '@sveltejs/kit';
 import { serializeNonPOJOs } from '$lib/utils';
 
@@ -13,7 +14,7 @@ export const load = async ({ locals }) => {
             expand: 'Book,Users,Posts'
         });
 
-        console.log('Fetched groups:', groups); // For debugging
+        // console.log('Fetched groups:', groups); // For debugging
 
         return {
             groups: serializeNonPOJOs(groups)

@@ -1,8 +1,6 @@
 <script>
   import { enhance } from "$app/forms";
   import { invalidateAll } from "$app/navigation";
-  import { onMount } from "svelte";
-  import { fade, fly } from "svelte/transition";
 
   export let data;
   $: ({ user, assignedBooks } = data);
@@ -42,20 +40,27 @@
   }
 </script>
 
-<div class="min-h-screen bg-base-200 py-8 px-4">
+<div
+  class="min-h-screen bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 py-12 px-4"
+>
   <div class="max-w-4xl mx-auto">
     {#if user}
-      <div class="text-center mb-8" in:fade>
-        <h1 class="text-4xl font-bold text-primary">Welcome, {user.name}!</h1>
-        <p class="text-base-content/70 mt-2">
-          Manage your profile and view your assigned books.
+      <div class="text-center mb-12">
+        <h1 class="text-5xl font-bold text-primary mb-4 relative inline-block">
+          Welcome, {user.name}!
+          <span
+            class="absolute -bottom-2 left-0 w-full h-1 bg-primary transform scale-x-0 transition-transform duration-300 ease-out hover:scale-x-100"
+          ></span>
+        </h1>
+        <p class="text-base-content/70 mt-2 text-lg italic">
+          Your literary journey awaits...
         </p>
       </div>
 
       {#if formMessage}
-        <div class="mb-8" in:fly={{ y: -20, duration: 300 }}>
+        <div class="mb-8 transform -translate-y-4 transition-all duration-300">
           <div
-            class={`alert ${formError ? "alert-error" : "alert-success"} shadow-lg`}
+            class={`alert ${formError ? "alert-error" : "alert-success"} shadow-lg border border-base-content/10`}
           >
             <div>
               <svg
@@ -80,11 +85,12 @@
 
       <div class="grid gap-8 md:grid-cols-2">
         <div
-          class="card bg-base-100 shadow-xl"
-          in:fly={{ x: -50, duration: 300, delay: 150 }}
+          class="card bg-base-100 shadow-xl border border-base-content/10 backdrop-blur-sm"
         >
           <div class="card-body">
-            <h2 class="card-title text-2xl mb-6">Profile Information</h2>
+            <h2 class="card-title text-2xl mb-6 text-primary">
+              Profile Information
+            </h2>
             <form
               method="POST"
               action="?/updateProfile"
@@ -109,7 +115,7 @@
                   name="name"
                   bind:value={name}
                   required
-                  class="input input-bordered w-full"
+                  class="input input-bordered w-full transition-all duration-300 focus:ring-2 focus:ring-primary"
                 />
               </div>
 
@@ -123,15 +129,17 @@
                   name="email"
                   bind:value={email}
                   required
-                  class="input input-bordered w-full"
+                  class="input input-bordered w-full transition-all duration-300 focus:ring-2 focus:ring-primary"
                 />
               </div>
 
-              <div class="divider">Password</div>
+              <div class="divider before:bg-primary/30 after:bg-primary/30">
+                Password
+              </div>
 
               <button
                 type="button"
-                class="btn btn-outline btn-sm"
+                class="btn btn-outline btn-sm hover:bg-primary hover:text-primary-content transition-all duration-300"
                 on:click={togglePasswordFields}
               >
                 {showPasswordFields
@@ -140,7 +148,7 @@
               </button>
 
               {#if showPasswordFields}
-                <div transition:fade>
+                <div class="space-y-4 transform transition-all duration-300">
                   <div class="form-control">
                     <label for="currentPassword" class="label">
                       <span class="label-text">Current Password</span>
@@ -151,7 +159,7 @@
                       name="currentPassword"
                       bind:value={currentPassword}
                       required
-                      class="input input-bordered w-full"
+                      class="input input-bordered w-full transition-all duration-300 focus:ring-2 focus:ring-primary"
                     />
                   </div>
 
@@ -165,7 +173,7 @@
                       name="newPassword"
                       bind:value={newPassword}
                       minlength="8"
-                      class="input input-bordered w-full"
+                      class="input input-bordered w-full transition-all duration-300 focus:ring-2 focus:ring-primary"
                     />
                   </div>
 
@@ -179,14 +187,16 @@
                       name="confirmPassword"
                       bind:value={confirmPassword}
                       minlength="8"
-                      class="input input-bordered w-full"
+                      class="input input-bordered w-full transition-all duration-300 focus:ring-2 focus:ring-primary"
                     />
                   </div>
                 </div>
               {/if}
 
               <div class="mt-6">
-                <button type="submit" class="btn btn-primary w-full"
+                <button
+                  type="submit"
+                  class="btn btn-primary w-full hover:shadow-lg transition-all duration-300"
                   >Update Profile</button
                 >
               </div>
@@ -195,25 +205,30 @@
         </div>
 
         <div
-          class="card bg-base-100 shadow-xl"
-          in:fly={{ x: 50, duration: 300, delay: 300 }}
+          class="card bg-base-100 shadow-xl border border-base-content/10 backdrop-blur-sm"
         >
           <div class="card-body">
-            <h2 class="card-title text-2xl mb-6">Your Assigned Books</h2>
+            <h2 class="card-title text-2xl mb-6 text-secondary">
+              Your Assigned Books
+            </h2>
             {#if assignedBooks.length > 0}
               <div class="overflow-x-auto">
-                <table class="table table-zebra w-full">
+                <table class="table w-full">
                   <thead>
-                    <tr>
-                      <th>Book Name</th>
-                      <th>Start Page</th>
-                      <th>End Page</th>
+                    <tr class="bg-base-200">
+                      <th class="bg-secondary/10 text-secondary">Book Name</th>
+                      <th class="bg-secondary/10 text-secondary">Start Page</th>
+                      <th class="bg-secondary/10 text-secondary">End Page</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {#each assignedBooks as book}
-                      <tr>
-                        <td>{book.expand.books.book_name}</td>
+                    {#each assignedBooks as book, i}
+                      <tr
+                        class="hover:bg-base-200 transition-colors duration-200"
+                      >
+                        <td class="font-medium"
+                          >{book.expand.books.book_name}</td
+                        >
                         <td>{book.start_page}</td>
                         <td>{book.end_page}</td>
                       </tr>
@@ -222,30 +237,35 @@
                 </table>
               </div>
             {:else}
-              <p class="text-base-content/70">
-                You don't have any assigned books at the moment.
+              <p class="text-base-content/70 italic text-center py-8">
+                Your reading list is a blank canvas, ready for new adventures...
               </p>
             {/if}
           </div>
         </div>
       </div>
 
-      <div class="mt-8 text-center" in:fade={{ delay: 450 }}>
-        <div class="form-control inline-flex">
-          <label class="label cursor-pointer">
-            <span class="label-text mr-2">Dark mode</span>
-            <input
-              type="checkbox"
-              value="synthwave"
-              class="toggle theme-controller"
-            />
-          </label>
+      <div class="mt-12 text-center">
+        <div
+          class="form-control inline-flex justify-center items-center space-x-4"
+        >
+          <span class="label-text text-lg">Embrace the night</span>
+          <input
+            type="checkbox"
+            value="synthwave"
+            class="toggle toggle-lg toggle-primary"
+          />
+          <span class="label-text text-lg">or bask in the light</span>
         </div>
       </div>
     {:else}
-      <div class="card bg-base-100 shadow-xl">
+      <div
+        class="card bg-base-100 shadow-xl border border-base-content/10 backdrop-blur-sm"
+      >
         <div class="card-body">
-          <p>Loading user data...</p>
+          <p class="text-center text-lg italic">
+            Unveiling your literary world...
+          </p>
         </div>
       </div>
     {/if}
